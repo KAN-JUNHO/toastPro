@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.toastpro.dao.BoardDAO">
+
+    <resultMap type="BoardDTO" id="BoardDTO">
+        <result property="boardIdx" column="BOARD_idx"/>
+        <result property="employeeIdx" column="EMPLOYEE_IDX"/>
+        <result property="boardType" column="BOARD_TYPE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="File" column="FILE"/>
+        <result property="insDate" column="INS_DATE"/>
+        <result property="updDate" column="UPD_DATE"/>
+        <result property="state" column="STATE"/>
+        <result property="title" column="title"/>
+
+    </resultMap>
+
+    <resultMap type="Employee" id="Employee">
+        <result property="employeeIdx" column="employee_idx"/>
+        <result property="companyIdx" column="company_Idx"/>
+        <result property="teamIdx" column="team_Idx"/>
+        <result property="dutyIdx" column="duty_Idx"/>
+        <result property="authorityIdx" column="authority_Idx"/>
+        <result property="departmentIdx" column="department_Idx"/>
+        <result property="name" column="name"/>
+        <result property="enName" column="en_Name"/>
+        <result property="profileImage" column="profile_Image"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="phoneNumber" column="phone_Number"/>
+        <result property="email" column="email"/>
+        <result property="salary" column="salary"/>
+        <result property="annualLeave" column="annual_Leave"/>
+        <result property="state" column="state"/>
+        <result property="hireDate" column="hire_Date"/>
+        <result property="resignationDate" column="resignation_Date"/>
+        <result property="insDate" column="ins_Date"/>
+        <result property="updDate" column="upd_Date"/>
+        <collection property="BoardDTO" resultMap="BoardDTO" />
+
+    </resultMap>
+
+    <select id="selectemployee_idx" parameterType="BoardDTO" resultMap="BoardDTO">
+        SELECT b.*
+        FROM Board b
+        left join Employee e on b.employee_idx = e.employee_idx
+        where b.employee_idx = #{e.employeeIdx}
+    </select>
+
+
+    <select id="getBoardList" resultType="BoardDTO">
+        select * from board
+    </select>
+
+
+    <insert id="insert">
+        insert into board(BOARD_IDX,EMPLOYEE_IDX, BOARD_TYPE, "CONTENT","FILE",INS_DATE,UPD_DATE,STATE,TITLE)
+        values(BOARD_SEQ.NEXTVAL,#{employeeIdx},#{boardType},#{content},#{File},SYSDATE,SYSDATE,#{state},#{title})
+    </insert>
+
+
+    <select id="reads" resultMap="BoardDTO">
+        select * from board where employee_idx = #{employeeIdx}
+    </select>
+
+    <select id="select" resultMap="BoardDTO">
+        select * from board where BOARD_idx = #{boardIdx}
+    </select>
+
+    <delete id="delete">
+        delete from board where EMPLOYEE_IDX = #{boardIdx}
+    </delete>
+
+    <update id="update">
+        update
+        board
+        set
+        title = #{title},
+        content = #{content},
+        UPD_DATE = SYSDATE
+        WHERE BOARD_idx = #{boardIdx}
+
+    </update>
+
+    <insert id="insertFile" parameterType="hashMap">
+        INSERT INTO boardAttach(
+        FILE_NO,
+        BNO,
+        ORG_FILE_NAME,
+        STORED_FILE_NAME,
+        FILE_SIZE
+        )VALUES(
+        SEQ_MP_FILE_NO.NEXTVAL,
+        #{BNO},
+        #{ORG_FILE_NAME},
+        #{STORED_FILE_NAME},
+        #{FILE_SIZE}
+        )
+        <!-- jdbcType=VARCHAR -->
+    </insert>
+
+    <insert id="insertSelectKey" parameterType="BoardDTO">
+        <selectKey keyProperty="boardIdx" order="BEFORE" resultType="long">
+            select BOARD_SEQ.NEXTVAL from dual
+        </selectKey>
+        insert into BOARD(BOARD_IDX,EMPLOYEE_IDX, BOARD_TYPE,"CONTENT",TITLE)
+        values(#{boardIdx},#{employeeIdx},#{boardType},#{content},#{title})
+    </insert>
+</mapper>

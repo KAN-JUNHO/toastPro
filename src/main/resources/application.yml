@@ -1,0 +1,24 @@
+  server:
+    port: 8080
+  spring:
+    datasource:
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@3.37.246.102:1521:XE
+      username: hecto
+      password: hecto
+    thymeleaf:
+      cache: false
+      check-template-location: true
+      mode: HTML5
+      template-resolver-order: 0
+    mvc:
+      view:
+        prefix: classpath:templates/
+        suffix: .html
+
+
+  mybatis:
+    type-aliases-package:
+      com.example.toastpro.dto
+    mapper-locations:
+      - classpath:mappers/*.xml
